@@ -1,0 +1,90 @@
+<script>
+// 2 HOURS TIMER
+const unlockDate = new Date().getTime() + (2 * 60 * 60 * 1000);
+
+const timer = document.getElementById("timer");
+const lock = document.getElementById("lock");
+const envelopeContainer = document.getElementById("envelopeContainer");
+const chat = document.getElementById("chat");
+const typingEl = document.getElementById("typing");
+
+const message = `Date: 5/3/26
+
+Tungkol saan ba ito?.........
+Past na 'yun..........
+
+Ano ang nararamdaman mo?...........
+Masakit..........
+
+Ano ang dahilan?.........
+Parang di ko matanggap—ay hindi, di ko talaga matanggap na ganun nangyari sayo sa past mo bago ako. Masakit oo, masakit talaga..........
+
+Ano ang nangyari?.........
+Wala, nalaman lang..........
+
+Sa iyong palagay, paano ba ito aayusin?.........
+Hindi ko rin alam. I think time will make me forget it. Ikaw bahala sa iba. Wala ka namang kasalanan, to be honest. Accept mo nalang siguro na ganun yung magiging reaction ko. Di naman kita masisisi kaya time nalang… di ko naman sinasabi na wala kang pwedeng gawin—I'll let you do whatever you want..........
+
+Ano ang hinihingi mo?.........
+Wala rin..........
+
+but dw, i understand, im still here and really, u dont need to worry..........
+
+— fin..........`;
+
+// TIMER FUNCTION
+const countdown = setInterval(() => {
+  const now = new Date().getTime();
+  const diff = unlockDate - now;
+
+  if (diff <= 0) {
+    clearInterval(countdown);
+    timer.style.display = "none";
+    lock.style.display = "block";
+    return;
+  }
+
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  timer.innerHTML = 
+    `${String(hours).padStart(2, '0')}:` +
+    `${String(minutes).padStart(2, '0')}:` +
+    `${String(seconds).padStart(2, '0')}`;
+}, 1000);
+
+// PASSWORD
+function checkPass() {
+  const val = document.getElementById("pass").value.toLowerCase();
+  if (val === "bang" || val === "beng") {
+    lock.style.display = "none";
+    envelopeContainer.style.display = "block";
+  } else {
+    document.getElementById("wrong").innerText = "Wrong password";
+  }
+}
+
+// ENVELOPE OPEN
+function openEnvelope(el) {
+  el.classList.add("open");
+
+  setTimeout(() => {
+    envelopeContainer.style.display = "none";
+    chat.style.display = "block";
+
+    setTimeout(() => {
+      chat.classList.add("show");
+      typeWriter(message);
+    }, 200);
+  }, 600);
+}
+
+// TYPEWRITER
+function typeWriter(text, i = 0) {
+  if (i < text.length) {
+    typingEl.innerHTML += text.charAt(i);
+    setTimeout(() => typeWriter(text, i + 1), 30);
+  }
+}
+</script>
