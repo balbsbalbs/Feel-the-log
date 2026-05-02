@@ -1,14 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Message Unlock</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #0f0f0f;
+  color: white;
+  text-align: center;
+  padding-top: 100px;
+}
+
+/* TIMER */
+#timer {
+  font-size: 40px;
+}
+
+/* LOCK SCREEN */
+#lock {
+  display: none;
+}
+
+input {
+  padding: 10px;
+  font-size: 16px;
+}
+
+button {
+  padding: 10px 20px;
+  margin-top: 10px;
+}
+
+/* ENVELOPE */
+#envelopeContainer {
+  display: none;
+}
+
+.envelope {
+  width: 200px;
+  height: 120px;
+  background: #ccc;
+  margin: auto;
+  cursor: pointer;
+  position: relative;
+  transition: 0.5s;
+}
+
+.envelope.open {
+  transform: scale(1.1);
+}
+
+/* CHAT */
+#chat {
+  display: none;
+  opacity: 0;
+  transition: 0.5s;
+}
+
+#chat.show {
+  opacity: 1;
+}
+
+#typing {
+  white-space: pre-wrap;
+  margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="timer"></div>
+
+<div id="lock">
+  <h3>Enter Password</h3>
+  <input id="pass" type="text">
+  <br>
+  <button onclick="checkPass()">Unlock</button>
+  <p id="wrong" style="color:red;"></p>
+</div>
+
+<div id="envelopeContainer">
+  <div class="envelope" onclick="openEnvelope(this)">
+    Click to open
+  </div>
+</div>
+
+<div id="chat">
+  <div id="typing"></div>
+</div>
+
 <script>
-// 2 HOURS TIMER
-const unlockDate = new Date().getTime() + (2 * 60 * 60 * 1000);
+document.addEventListener("DOMContentLoaded", () => {
 
-const timer = document.getElementById("timer");
-const lock = document.getElementById("lock");
-const envelopeContainer = document.getElementById("envelopeContainer");
-const chat = document.getElementById("chat");
-const typingEl = document.getElementById("typing");
+  // TIMER (2 HOURS)
+  const unlockDate = new Date().getTime() + (2 * 60 * 60 * 1000);
 
-const message = `Date: 5/3/26
+  const timer = document.getElementById("timer");
+  const lock = document.getElementById("lock");
+  const envelopeContainer = document.getElementById("envelopeContainer");
+  const chat = document.getElementById("chat");
+  const typingEl = document.getElementById("typing");
+
+  const message = `Date: 5/3/26
 
 Tungkol saan ba ito?.........
 Past na 'yun..........
@@ -32,59 +128,64 @@ but dw, i understand, im still here and really, u dont need to worry..........
 
 — fin..........`;
 
-// TIMER FUNCTION
-const countdown = setInterval(() => {
-  const now = new Date().getTime();
-  const diff = unlockDate - now;
+  // COUNTDOWN
+  const countdown = setInterval(() => {
+    const now = new Date().getTime();
+    const diff = unlockDate - now;
 
-  if (diff <= 0) {
-    clearInterval(countdown);
-    timer.style.display = "none";
-    lock.style.display = "block";
-    return;
-  }
+    if (diff <= 0) {
+      clearInterval(countdown);
+      timer.style.display = "none";
+      lock.style.display = "block";
+      return;
+    }
 
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-  timer.innerHTML = 
-    `${String(hours).padStart(2, '0')}:` +
-    `${String(minutes).padStart(2, '0')}:` +
-    `${String(seconds).padStart(2, '0')}`;
-}, 1000);
+    timer.innerHTML =
+      `${String(hours).padStart(2, '0')}:` +
+      `${String(minutes).padStart(2, '0')}:` +
+      `${String(seconds).padStart(2, '0')}`;
+  }, 1000);
 
-// PASSWORD
-function checkPass() {
-  const val = document.getElementById("pass").value.toLowerCase();
-  if (val === "bang" || val === "beng") {
-    lock.style.display = "none";
-    envelopeContainer.style.display = "block";
-  } else {
-    document.getElementById("wrong").innerText = "Wrong password";
-  }
-}
+  // PASSWORD CHECK
+  window.checkPass = function () {
+    const val = document.getElementById("pass").value.toLowerCase();
+    if (val === "bang" || val === "beng") {
+      lock.style.display = "none";
+      envelopeContainer.style.display = "block";
+    } else {
+      document.getElementById("wrong").innerText = "Wrong password";
+    }
+  };
 
-// ENVELOPE OPEN
-function openEnvelope(el) {
-  el.classList.add("open");
-
-  setTimeout(() => {
-    envelopeContainer.style.display = "none";
-    chat.style.display = "block";
+  // OPEN ENVELOPE
+  window.openEnvelope = function (el) {
+    el.classList.add("open");
 
     setTimeout(() => {
-      chat.classList.add("show");
-      typeWriter(message);
-    }, 200);
-  }, 600);
-}
+      envelopeContainer.style.display = "none";
+      chat.style.display = "block";
 
-// TYPEWRITER
-function typeWriter(text, i = 0) {
-  if (i < text.length) {
-    typingEl.innerHTML += text.charAt(i);
-    setTimeout(() => typeWriter(text, i + 1), 30);
+      setTimeout(() => {
+        chat.classList.add("show");
+        typeWriter(message);
+      }, 200);
+    }, 600);
+  };
+
+  // TYPEWRITER EFFECT
+  function typeWriter(text, i = 0) {
+    if (i < text.length) {
+      typingEl.innerHTML += text.charAt(i);
+      setTimeout(() => typeWriter(text, i + 1), 30);
+    }
   }
-}
+
+});
 </script>
+
+</body>
+</html>
